@@ -408,6 +408,21 @@ button,input,textarea{
   color:var(--sub);
 }
 
+.water-habit{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.water-controls{display:flex;gap:6px;margin-top:6px}
+.water-btn{
+  width:30px;height:26px;border:0;border-radius:10px;
+  background:var(--surface);color:var(--text);
+  font-weight:900;font-size:18px;line-height:1;
+  box-shadow:var(--shadow-raised);
+}
+.water-btn.add{background:var(--blue);color:#12314A}
+.water-btn:active{transform:scale(.96)}
+@media (max-width:430px){
+  .water-controls{gap:5px;margin-top:5px}
+  .water-btn{width:27px;height:24px;font-size:16px;border-radius:9px}
+}
+
 .logbtn{
   width:100%;
   border:0;
@@ -680,7 +695,14 @@ button,input,textarea{
   </div>
 
   <div class="habits">
-    <button class="habit" onclick="quickWater()"><b id="water">—</b><span>💧 מים</span><div class="quick-water">לחיצה = +1 כוס</div></button>
+    <div class="habit water-habit">
+      <b id="water">—</b>
+      <span>💧 מים</span>
+      <div class="water-controls">
+        <button type="button" class="water-btn" onclick="changeWater(-1)" aria-label="הורידי כוס מים">−</button>
+        <button type="button" class="water-btn add" onclick="changeWater(1)" aria-label="הוסיפי כוס מים">+</button>
+      </div>
+    </div>
     <button class="habit" onclick="editHabit('steps','צעדים')"><b id="steps">—</b><span>👟 צעדים</span></button>
     <button class="habit" onclick="editHabit('sleep','שעות שינה')"><b id="sleep">—</b><span>🌙 שינה</span></button>
   </div>
@@ -909,9 +931,14 @@ async function sendChat(){
 }
 function compactState(){return {done:state.done,selections:state.selections,addon:state.addon,hunger:state.hunger,unplanned:state.unplanned,extraProtein:state.extraProtein,habits:state.habits}}
 
-function quickWater(){
-  const current=parseInt(state.habits.water||'0',10)||0;state.habits.water=String(current+1);save();toast(`💧 ${current+1} כוסות`);
+function changeWater(delta){
+  const current=parseInt(state.habits.water||'0',10)||0;
+  const next=Math.max(0,current+delta);
+  state.habits.water=String(next);
+  save();
+  toast(`💧 ${next} כוסות`);
 }
+function quickWater(){changeWater(1)}
 function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1500)}
 
 function openSummary(){

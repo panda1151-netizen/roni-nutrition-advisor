@@ -774,7 +774,7 @@ const SWAPS={
 'שומן':['5 שקדים','2 אגוזי מלך','5 קשיו','5 אגוזי מקדמיה','אגוז ברזיל אחד','5 זיתים','רבע אבוקדו','כפית שמן זית','חצי כפית טחינה גולמית','כפית טחינה מוכנה','חצי כפית חמאת בוטנים','4 קוביות שוקולד מריר']
 };
 
-const API_BASE=localStorage.getItem('roni-api-base')||'';
+const API_BASE=localStorage.getItem('roni-api-base')||'https://roni-nutrition-advisor-api.onrender.com';
 const KEY='roni-advisor-full-v3';
 let db=JSON.parse(localStorage.getItem(KEY)||'{"days":{}}');
 const dateKey=new Date().toISOString().slice(0,10);

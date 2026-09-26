@@ -774,7 +774,8 @@ const SWAPS={
 'שומן':['5 שקדים','2 אגוזי מלך','5 קשיו','5 אגוזי מקדמיה','אגוז ברזיל אחד','5 זיתים','רבע אבוקדו','כפית שמן זית','חצי כפית טחינה גולמית','כפית טחינה מוכנה','חצי כפית חמאת בוטנים','4 קוביות שוקולד מריר']
 };
 
-const API_BASE=localStorage.getItem('roni-api-base')||'https://roni-nutrition-advisor-api.onrender.com';
+const API_ENABLED=false;
+const API_BASE='';
 const KEY='roni-advisor-full-v3';
 let db=JSON.parse(localStorage.getItem(KEY)||'{"days":{}}');
 const dateKey=new Date().toISOString().slice(0,10);
@@ -946,14 +947,16 @@ function localReply(t){
   return 'אני כאן איתך. כתבי לי מה אכלת, מה חסר בבית או מה את מתלבטת לגביו, ואעזור לפי התפריט.';
 }
 async function sendChat(){
-  const inp=document.getElementById('chatInput');const t=inp.value.trim();if(!t&&!pendingPhoto)return;
-  state.chat.push({role:'user',text:t||'שלחתי תמונה של הצלחת'});save();
-  let reply='';
-  try{
-    const r=await fetch(`${API_BASE}/api/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t,image:pendingPhoto,state:compactState()})});
-    if(!r.ok)throw new Error();const d=await r.json();reply=d.reply||localReply(t);
-  }catch{reply=localReply(t||'תמונה')}
-  state.chat.push({role:'ai',text:reply});pendingPhoto=null;save();openChat('');
+  const inp=document.getElementById('chatInput');
+  const t=inp.value.trim();
+  if(!t&&!pendingPhoto)return;
+  state.chat.push({role:'user',text:t||'שלחתי תמונה של הצלחת'});
+  save();
+  const reply=localReply(t||'תמונה');
+  state.chat.push({role:'ai',text:reply});
+  pendingPhoto=null;
+  save();
+  openChat('');
 }
 function compactState(){return {done:state.done,selections:state.selections,addon:state.addon,hunger:state.hunger,unplanned:state.unplanned,extraProtein:state.extraProtein,habits:state.habits}}
 

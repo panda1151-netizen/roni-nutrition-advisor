@@ -492,6 +492,41 @@ button,input,textarea{
   box-shadow:0 -10px 26px rgba(23,20,72,.12);
 }
 
+.sheet-nav{
+  position:sticky;
+  top:-14px;
+  z-index:4;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:-4px -2px 12px;
+  padding:6px 2px 8px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.sheet-home{
+  border:0;
+  border-radius:999px;
+  padding:8px 12px;
+  background:var(--card);
+  color:var(--text);
+  font-weight:900;
+  font-size:12px;
+  box-shadow:var(--shadow-raised);
+  display:flex;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+}
+.sheet-home:active{transform:scale(.97)}
+.sheet-nav .handle{margin:0 0 0 8px;flex:0 0 46px}
+@media (max-width:430px){
+  .sheet-nav{top:-12px;margin:-3px -1px 10px;padding:5px 1px 7px}
+  .sheet-home{padding:7px 10px;font-size:11px}
+}
+
 .handle{
   width:54px;
   height:6px;
@@ -797,9 +832,18 @@ function toggleMeal(id){
   save();
 }
 function toggleAddon(){state.addon=!state.addon;save()}
-function show(html){document.getElementById('sheet').innerHTML=`<div class="handle"></div>${html}`;document.getElementById('overlay').classList.add('show')}
+function show(html){
+  document.getElementById('sheet').innerHTML=`
+    <div class="sheet-nav">
+      <button type="button" class="sheet-home" onclick="closeSheet()" aria-label="חזרה לתפריט הראשי">✕ <span>לתפריט הראשי</span></button>
+      <div class="handle"></div>
+    </div>
+    ${html}`;
+  document.getElementById('overlay').classList.add('show');
+}
 function closeSheet(){document.getElementById('overlay').classList.remove('show')}
 function closeOnOverlay(e){if(e.target.id==='overlay')closeSheet()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 
 function openSwap(mealId,type){
   const cur=TEMPLATE.find(m=>m.id===mealId);const current=cur.groups.find(g=>g.type===type)?.text||'';

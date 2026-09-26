@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F4F1FB">
+<title>היועצת האישית של רוני</title>
+<style>
+:root{
+  --bg:#F4F1FB;--card:#fff;--line:#DDD7EE;--text:#181448;--sub:#827BA4;
+  --purple:#6F4DE6;--purple-soft:#ECE7FB;--blue:#84C9F2;--blue-soft:#E0F2FD;
+  --green:#5BB891;--pink:#E7A8D6;--shadow:0 4px 0 rgba(210,202,235,.34);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--text)}
+body{min-height:100vh}
+button,input,textarea{font:inherit}
+.app{max-width:430px;margin:auto;min-height:100vh;padding:20px 18px 132px;position:relative;overflow:hidden}
+.shape{position:absolute;border-radius:50%;z-index:0}
+.s1{width:180px;height:180px;top:-80px;right:-15px;background:rgba(111,77,230,.07)}
+.s2{width:135px;height:135px;top:-50px;left:-45px;background:rgba(132,201,242,.12)}
+.screen{position:relative;z-index:1}
+.header{display:flex;justify-content:space-between;align-items:center}
+.header h1{margin:0;font-size:29px;font-weight:900}.header p{margin:6px 0 0;color:var(--sub)}
+.day-badge{background:#fff;border:2px solid var(--line);border-radius:999px;padding:10px 13px;font-size:13px;font-weight:800;box-shadow:var(--shadow)}
+.status-pill{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:11px 15px;font-weight:900;font-size:16px;box-shadow:var(--shadow);width:max-content;max-width:100%;margin:18px 0 20px auto}
+.status-dot{width:18px;height:18px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 6px rgba(132,201,242,.18)}
+.progress{height:8px;background:#E6E0F4;border-radius:99px;overflow:hidden;margin-bottom:20px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));transition:.25s}
+.timeline-wrap{position:relative;padding-right:34px}
+.timeline{position:absolute;right:11px;top:24px;bottom:30px;width:5px;background:#DFD9EF;border-radius:99px}
+.meal-card{position:relative;background:#fff;border:2px solid var(--line);border-radius:32px;padding:22px 19px;margin-bottom:17px;box-shadow:var(--shadow)}
+.meal-card.collapsed{cursor:pointer}.meal-card.done{opacity:.7}
+.node{position:absolute;right:-35px;top:33px;width:28px;height:28px;border-radius:50%;background:var(--bg);border:5px solid var(--line)}
+.meal-card.expanded .node{border-color:#2E96D3;background:#fff}
+.meal-head{display:flex;justify-content:space-between;align-items:center}
+.meal-meta{display:flex;align-items:baseline;gap:11px}.meal-name{font-size:31px;font-weight:900}.meal-time{font-size:18px;color:var(--sub)}
+.dots{display:flex;gap:8px}.dots i{display:block;width:15px;height:15px;border-radius:50%}.d1{background:#2698DC}.d2{background:#7351E8}.d3{background:#B97BEF}
+.details{margin-top:22px}.collapsed .details{display:none}
+.food-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:15px 16px;border-radius:25px;margin-bottom:13px;background:var(--purple-soft)}
+.food-row.blue{background:var(--blue-soft)}
+.tag{background:#fff;border-radius:999px;padding:9px 14px;font-weight:900;color:var(--purple);font-size:16px}.blue .tag{color:#258FCF}
+.food{font-size:20px;font-weight:800}.swap{border:0;background:none;font-size:26px;color:#8B84AC}
+.card-actions{display:flex;gap:10px;align-items:center;margin-top:16px}
+.eaten{border:0;background:var(--purple);color:#fff;border-radius:999px;padding:16px 26px;font-size:19px;font-weight:900;box-shadow:var(--shadow)}
+.note{color:var(--sub);font-size:14px;line-height:1.35;text-align:center;flex:1}
+.addon-card{background:#fff;border:2px solid var(--line);border-radius:28px;padding:17px 18px;margin:3px 0 18px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center}
+.addon-card strong{display:block;font-size:18px}.addon-card small{color:var(--sub)}
+.toggle{border:0;border-radius:999px;padding:10px 16px;font-weight:900;background:var(--purple-soft);color:var(--purple)}.toggle.used{background:#DFF3EA;color:#2B8B68}
+.habits{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px}
+.habit{border:2px solid var(--line);background:#fff;border-radius:24px;padding:13px 8px;text-align:center;box-shadow:var(--shadow)}
+.habit b{display:block;font-size:19px}.habit span{font-size:12px;color:var(--sub)}
+.logbtn{width:100%;border:0;background:#fff;border:2px solid var(--line);border-radius:24px;padding:14px;font-weight:900;color:var(--text);box-shadow:var(--shadow);margin-bottom:18px}
+.footer{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:min(410px,calc(100% - 24px));display:grid;grid-template-columns:1fr 1fr;gap:9px;z-index:5}
+.footer button{border:0;border-radius:25px;padding:16px 10px;font-size:16px;font-weight:900;box-shadow:var(--shadow)}
+.primary{background:var(--blue);color:#12314A}.secondary{background:#fff;color:var(--text);border:2px solid var(--line)!important}
+.overlay{position:fixed;inset:0;background:rgba(23,20,72,.18);display:none;align-items:flex-end;z-index:20}.overlay.show{display:flex}
+.sheet{width:min(430px,100%);margin:auto;background:#fff;border-radius:32px 32px 0 0;padding:18px 17px 26px;max-height:90vh;overflow:auto}
+.handle{width:58px;height:6px;border-radius:99px;background:#E8E3F5;margin:0 auto 15px}
+.sheet h3{margin:0 0 8px;font-size:27px}.sub{color:var(--sub);font-size:14px;line-height:1.45;margin:0 0 15px}
+.option{display:flex;justify-content:space-between;align-items:center;background:#F8F6FD;border:2px solid #EEE9FA;border-radius:22px;padding:14px 15px;margin-bottom:9px}
+.option strong{font-size:17px}.option small{display:block;color:var(--sub);margin-top:3px}
+.action{width:100%;border:0;border-radius:22px;padding:15px 16px;font-weight:900;font-size:17px;background:var(--purple);color:#fff;margin-top:8px}.action.light{background:#fff;color:var(--text);border:2px solid var(--line)}.action.blue{background:var(--blue);color:#12314A}
+.chatbox{height:54vh;background:#FBFAFF;border:2px solid #EFEAF9;border-radius:24px;padding:11px;display:flex;flex-direction:column}
+.messages{flex:1;overflow:auto;display:flex;flex-direction:column;gap:9px}.msg{max-width:84%;padding:11px 13px;border-radius:19px;font-size:15px;line-height:1.45;white-space:pre-wrap}.msg.ai{align-self:flex-start;background:#F0ECFC}.msg.user{align-self:flex-end;background:var(--blue);color:#12314A}
+.composer{display:grid;grid-template-columns:auto 1fr auto;gap:7px;margin-top:9px}.composer textarea{resize:none;border:2px solid #EAE5F6;border-radius:18px;padding:11px;min-height:44px;color:var(--text)}.send,.photo{border:0;border-radius:17px;font-weight:900}.send{background:var(--purple);color:#fff;padding:0 15px}.photo{background:#F0ECFC;color:var(--purple);width:44px}
+.preview{max-width:110px;border-radius:16px;margin:8px 0}
+.summary{white-space:pre-wrap;background:#F8F6FD;border:2px solid #EEE9FA;border-radius:24px;padding:14px;line-height:1.55;font-size:14px}
+.log-row{padding:10px 0;border-bottom:1px solid #EEE9FA;font-size:14px}.log-row:last-child{border-bottom:0}.muted{color:var(--sub)}
+input.num{width:100%;border:2px solid #EAE5F6;border-radius:18px;padding:14px;color:var(--text)}
+
+.toast{position:fixed;top:18px;left:50%;transform:translate(-50%,-80px);background:#181448;color:#fff;border-radius:999px;padding:10px 15px;font-size:14px;font-weight:800;z-index:60;transition:.25s}.toast.show{transform:translate(-50%,0)}
+.analysis-card{background:#F8F6FD;border:2px solid #EEE9FA;border-radius:24px;padding:14px;margin-top:12px}
+.analysis-title{font-size:18px;font-weight:900;margin-bottom:10px}.analysis-grid{display:grid;gap:9px}.analysis-row{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;background:#fff;border-radius:18px;padding:11px 12px;border:1px solid #EEE9FA}.analysis-row b{font-size:14px}.analysis-row span{font-size:14px;line-height:1.4}.analysis-ok{color:#2B8B68;font-weight:900}.analysis-warn{color:#A36B1B;font-weight:900}
+.photo-hero{width:100%;border:0;background:var(--blue);color:#12314A;border-radius:24px;padding:14px 16px;font-weight:900;font-size:16px;margin:8px 0 10px}.photo-preview-large{width:100%;max-height:44vh;object-fit:cover;border-radius:22px;border:2px solid #EEE9FA}.two-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.loading{padding:20px 4px;text-align:center;color:var(--sub)}
+.quick-water{font-size:11px;margin-top:4px;color:var(--purple);font-weight:900}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="shape s1"></div><div class="shape s2"></div>
+<div class="screen">
+  <div class="header">
+    <div><h1>היועצת האישית</h1><p id="date"></p></div>
+    <div class="day-badge" id="dayScore">0/4 ארוחות</div>
+  </div>
+  <div class="status-pill"><span class="status-dot"></span><span id="nextMeal">הבא: בוקר · 08:30</span></div>
+  <div class="progress"><div id="progressBar"></div></div>
+
+  <div class="timeline-wrap">
+    <div class="timeline"></div>
+    <div id="mealList"></div>
+  </div>
+
+  <div class="addon-card">
+    <div><strong>✨ תוספת גמישה</strong><small>פרי / חלבון / שומן מהרשימה</small></div>
+    <button id="addonBtn" class="toggle" onclick="toggleAddon()">זמינה</button>
+  </div>
+
+  <div class="habits">
+    <button class="habit" onclick="quickWater()"><b id="water">—</b><span>💧 מים</span><div class="quick-water">לחיצה = +1 כוס</div></button>
+    <button class="habit" onclick="editHabit('steps','צעדים')"><b id="steps">—</b><span>👟 צעדים</span></button>
+    <button class="habit" onclick="editHabit('sleep','שעות שינה')"><b id="sleep">—</b><span>🌙 שינה</span></button>
+  </div>
+  <button class="logbtn" onclick="openDayLog()">📋 יומן היום</button>
+</div>
+</div>
+
+<div class="footer">
+  <button class="primary" onclick="openHunger()">אני רעבה 🍽️</button>
+  <button class="secondary" onclick="openChat('מה נשאר היום?')">מה נשאר היום?</button>
+  <button class="secondary" onclick="openUnplanned()">אכלתי משהו לא מתוכנן</button>
+  <button class="secondary" onclick="openChat('')">שיחה עם היועצת</button>
+</div>
+
+<div class="toast" id="toast"></div><div class="overlay" id="overlay" onclick="closeOnOverlay(event)"><div class="sheet" id="sheet"></div></div>
+<input id="photoInput" type="file" accept="image/*" hidden onchange="loadPhoto(event)">
+
+<script>
+const TEMPLATE = [
+{id:'breakfast',name:'בוקר',time:'08:30',dots:['d1','d2'],groups:[
+ {type:'חלבון',text:'2 ביצים קשות',theme:'purple'},
+ {type:'פחמימה',text:'פיתה כוסמין קלה',theme:'blue'}]},
+{id:'lunch',name:'צהריים',time:'13:00',dots:['d1','d2'],groups:[
+ {type:'חלבון כפול',text:'פס סלמון',theme:'purple'},
+ {type:'פחמימה',text:'כוס אורז / קוסקוס / קינואה',theme:'blue'}]},
+{id:'snack',name:'ביניים',time:'16:30',dots:['d3','d2'],groups:[
+ {type:'חלבון',text:'מעדן חלבון',theme:'purple'},
+ {type:'פרי',text:'תפוח',theme:'blue'}]},
+{id:'dinner',name:'ערב',time:'19:00',dots:['d1','d2'],groups:[
+ {type:'חלבון',text:"3 כפות קוטג' 5%",theme:'purple'},
+ {type:'פחמימה',text:'4 פריכיות',theme:'blue'},
+ {type:'שומן',text:'5 זיתים',theme:'purple'}]}
+];
+
+const SWAPS={
+'חלבון':['2 ביצים קשות','ביצה + 2 כפות גבינה 5%','ביצה + חלבון ביצה',"3 כפות גדושות קוטג' 5%",'2 כפות גדושות גבינה לבנה 5%','1.5 פרוסות גבינה צהובה 15%','2 פרוסות גבינה צהובה לייט','גביע יוגורט פרו','מעדן חלבון','קופסת טונה במים','חצי קופסת טונה בשמן','המבורגר צמחוני טבעול','חצי כוס חומוס מבושל','6 כפות עדשים / שעועית לבנה'],
+'חלבון כפול':['פס סלמון','2 פילה אמנון / סול','2 יחידות בקלה / נסיכת הנילוס','2 ביצים קשות + קופסת טונה במים','3 פרוסות גבינה צהובה 15%','2 המבורגרים צמחוניים טבעול'],
+'פחמימה':['פיתה כוסמין קלה','חצי פיתה רגילה','2 פרוסות לחם מלא','2 פרוסות לחם בריאות','3 פרוסות לחם קל','4 פריכיות','4–5 דפי אורז','טורטייה קטנה','כוס אורז / קוסקוס / קינואה / כוסמת','כוס וחצי בורגול','3 חתיכות תפוח אדמה','3 כפות קוואקר','כוס אפונה'],
+'פרי':['תפוח','אגס','קיווי','תפוז','אפרסק / שזיף','2 כוסות אבטיח / מלון','כוס פירות יער','בננה','2 תמרים בינוניים','תמר מג׳הול אחד','כוס מנגו','2 פרוסות אננס','כפית דבש'],
+'שומן':['5 שקדים','2 אגוזי מלך','5 קשיו','5 אגוזי מקדמיה','אגוז ברזיל אחד','5 זיתים','רבע אבוקדו','כפית שמן זית','חצי כפית טחינה גולמית','כפית טחינה מוכנה','חצי כפית חמאת בוטנים','4 קוביות שוקולד מריר']
+};
+
+const KEY='roni-advisor-full-v3';
+let db=JSON.parse(localStorage.getItem(KEY)||'{"days":{}}');
+const dateKey=new Date().toISOString().slice(0,10);
+if(!db.days[dateKey]) db.days[dateKey]={done:{},active:'breakfast',selections:{},addon:false,hunger:[],unplanned:[],extraProtein:[],habits:{},chat:[{role:'ai',text:'היי רוני 💜 אני כאן איתך. מה את צריכה עכשיו?'}]};
+let state=db.days[dateKey];
+let pendingPhoto=null;
+let lastPlateAnalysis=null;
+
+function mealSelection(mealId,type,def){
+  return state.selections?.[mealId]?.[type]||def;
+}
+function ensureSel(){state.selections=state.selections||{}}
+function save(){db.days[dateKey]=state;localStorage.setItem(KEY,JSON.stringify(db));render()}
+function render(){
+  document.getElementById('date').textContent=new Intl.DateTimeFormat('he-IL',{weekday:'long',day:'numeric',month:'long'}).format(new Date());
+  const doneCount=TEMPLATE.filter(m=>state.done[m.id]).length;
+  document.getElementById('dayScore').textContent=`${doneCount}/4 ארוחות`;
+  document.getElementById('progressBar').style.width=(doneCount/4*100)+'%';
+  const next=TEMPLATE.find(m=>!state.done[m.id]);
+  document.getElementById('nextMeal').textContent=next?`הבא: ${next.name} · ${next.time}`:'כל הארוחות סומנו ✓';
+  const list=document.getElementById('mealList');list.innerHTML='';
+  TEMPLATE.forEach(meal=>{
+    const exp=state.active===meal.id;
+    const card=document.createElement('div');card.className=`meal-card ${exp?'expanded':'collapsed'} ${state.done[meal.id]?'done':''}`;
+    card.onclick=()=>{if(!exp){state.active=meal.id;save()}};
+    const dots=meal.dots.map(d=>`<i class="${d}"></i>`).join('');
+    const rows=meal.groups.map(g=>{
+      const selected=mealSelection(meal.id,g.type,g.text);
+      return `<div class="food-row ${g.theme==='blue'?'blue':''}">
+        <span class="tag">${g.type}</span><span class="food">${selected}</span>
+        <button class="swap" onclick="event.stopPropagation();openSwap('${meal.id}','${g.type}')">⇄</button>
+      </div>`;
+    }).join('');
+    card.innerHTML=`<span class="node"></span>
+      <div class="meal-head"><div class="meal-meta"><span class="meal-name">${meal.name}</span><span class="meal-time">${meal.time}</span></div><div class="dots">${dots}</div></div>
+      <div class="details">${rows}<div class="card-actions">
+        <button class="eaten" onclick="event.stopPropagation();toggleMeal('${meal.id}')">${state.done[meal.id]?'↶ בטלי':'✓ אכלתי'}</button>
+        <div class="note">נגיעה ב־⇄ מחליפה רכיב באותה קבוצה</div>
+      </div></div>`;
+    list.appendChild(card);
+  });
+  const ab=document.getElementById('addonBtn');ab.textContent=state.addon?'נוצלה ✓':'זמינה';ab.classList.toggle('used',state.addon);
+  ['water','steps','sleep'].forEach(k=>document.getElementById(k).textContent=state.habits[k]??'—');
+}
+function toggleMeal(id){
+  state.done[id]=!state.done[id];
+  if(state.done[id]){const i=TEMPLATE.findIndex(m=>m.id===id);const n=TEMPLATE.slice(i+1).find(m=>!state.done[m.id]);if(n)state.active=n.id}
+  save();
+}
+function toggleAddon(){state.addon=!state.addon;save()}
+function show(html){document.getElementById('sheet').innerHTML=`<div class="handle"></div>${html}`;document.getElementById('overlay').classList.add('show')}
+function closeSheet(){document.getElementById('overlay').classList.remove('show')}
+function closeOnOverlay(e){if(e.target.id==='overlay')closeSheet()}
+
+function openSwap(mealId,type){
+  const cur=TEMPLATE.find(m=>m.id===mealId);const current=cur.groups.find(g=>g.type===type)?.text||'';
+  const opts=(SWAPS[type]||[]).map(o=>`<div class="option" onclick="applySwap('${mealId}','${type}','${encodeURIComponent(o)}')"><div><strong>${o}</strong><small>${type}</small></div><b>‹</b></div>`).join('');
+  show(`<h3>החלפת ${type}</h3><p class="sub">אותה קבוצה, אותה מנה. הבחירה נשמרת להיום.</p>${opts}`);
+}
+function applySwap(mealId,type,encoded){
+  ensureSel();state.selections[mealId]=state.selections[mealId]||{};state.selections[mealId][type]=decodeURIComponent(encoded);closeSheet();save();
+}
+
+function openHunger(){
+  const allDone=TEMPLATE.every(m=>state.done[m.id]);
+  let third=allDone&&state.addon?'אם עדיין רעבה — אפשר מנת חלבון קלה חד־פעמית ולרשום אותה לסיכום':'מנת חלבון נוספת רק אם כל היום הושלם והתוספת כבר נוצלה';
+  show(`<h3>אני רעבה</h3><p class="sub">נלך לפי הסדר שהוגדר בתפריט.</p>
+    <div class="option"><div><strong>1. ירקות חופשיים</strong><small>מלפפון, עגבנייה, חסה, כרובית, קישוא וכו׳</small></div><b>🥒</b></div>
+    <div class="option"><div><strong>2. תוספת גמישה</strong><small>${state.addon?'כבר נוצלה היום':'עדיין זמינה'}</small></div><b>✨</b></div>
+    <div class="option"><div><strong>3. אם הרעב נשאר</strong><small>${third}</small></div><b>💜</b></div>
+    <button class="action blue" onclick="logHunger()">תעדי אירוע רעב</button>
+    ${allDone&&state.addon?'<button class="action" onclick="openExtraProtein()">בחרי מנת חלבון קלה</button>':''}`);
+}
+function logHunger(){state.hunger.push({time:new Date().toISOString(),afterCompleted:TEMPLATE.filter(m=>state.done[m.id]).map(m=>m.name),addonUsed:state.addon});save();closeSheet()}
+function openExtraProtein(){
+  const opts=['מעדן חלבון',"3 כפות קוטג' 5%",'גביע יוגורט פרו','ביצה + חלבון ביצה','קופסת טונה במים'].map(o=>`<div class="option" onclick="logExtraProtein('${encodeURIComponent(o)}')"><strong>${o}</strong><b>+</b></div>`).join('');
+  show(`<h3>מנת חלבון קלה</h3><p class="sub">התאמה חד־פעמית בגלל רעב לאחר שסיימת את היום.</p>${opts}`);
+}
+function logExtraProtein(e){state.extraProtein.push({time:new Date().toISOString(),item:decodeURIComponent(e)});closeSheet();save()}
+
+function openUnplanned(){
+  show(`<h3>אכלתי משהו לא מתוכנן</h3><p class="sub">זה לא דורש פיצוי. ממשיכים לארוחה הבאה כרגיל.</p>
+  <textarea id="unp" rows="3" placeholder="רוצה לרשום מה היה? (לא חובה)" style="width:100%;border:2px solid #EAE5F6;border-radius:18px;padding:12px"></textarea>
+  <button class="action blue" onclick="saveUnplanned()">שמרי ביומן</button>
+  <button class="action light" onclick="closeSheet()">רק המשיכי כרגיל</button>`);
+}
+function saveUnplanned(){const t=document.getElementById('unp').value.trim();state.unplanned.push({time:new Date().toISOString(),text:t||'אכילה לא מתוכננת'});closeSheet();save()}
+
+function editHabit(k,label){
+  show(`<h3>${label}</h3><p class="sub">נשמר רק מה שאת מדווחת.</p><input class="num" id="habitInput" inputmode="decimal" placeholder="הזיני ערך"><button class="action" onclick="saveHabit('${k}')">שמירה</button>`);
+  setTimeout(()=>document.getElementById('habitInput').focus(),100);
+}
+function saveHabit(k){const v=document.getElementById('habitInput').value.trim();if(v){state.habits[k]=v;save()}closeSheet()}
+
+function openDayLog(){
+  const rows=[];
+  TEMPLATE.forEach(m=>rows.push(`<div class="log-row"><b>${m.name}</b> — ${state.done[m.id]?'הושלמה ✓':'פתוחה'}</div>`));
+  rows.push(`<div class="log-row"><b>תוספת גמישה</b> — ${state.addon?'נוצלה':'זמינה'}</div>`);
+  rows.push(`<div class="log-row"><b>רעב</b> — ${state.hunger.length} דיווחים</div>`);
+  rows.push(`<div class="log-row"><b>אכילה לא מתוכננת</b> — ${state.unplanned.length} דיווחים</div>`);
+  rows.push(`<div class="log-row"><b>חלבון נוסף בגלל רעב</b> — ${state.extraProtein.length}</div>`);
+  rows.push(`<div class="log-row"><b>צלחות שנותחו</b> — ${(state.plateAnalyses||[]).length}</div>`);
+  show(`<h3>יומן היום</h3><p class="sub">התמונה המלאה של היום, בלי ציונים.</p>${rows.join('')}<button class="action blue" onclick="openSummary()">סיכום שבוע</button>`);
+}
+
+function openChat(seed=''){
+  const msgs=state.chat.map(m=>`<div class="msg ${m.role==='user'?'user':'ai'}">${escapeHtml(m.text)}</div>`).join('');
+  show(`<h3>שיחה עם היועצת</h3><p class="sub">אפשר לכתוב או לצלם צלחת. צילום יקבל ניתוח מול הארוחה הפעילה.</p>
+  <button class="photo-hero" onclick="document.getElementById('photoInput').click()">📷 צלמי את הצלחת</button>
+  <div class="chatbox"><div class="messages" id="messages">${msgs}</div><div id="previewHolder"></div>
+  <div class="composer"><button class="photo" onclick="document.getElementById('photoInput').click()">📷</button><textarea id="chatInput" rows="1" placeholder="כתבי לי מה קורה…">${escapeHtml(seed)}</textarea><button class="send" onclick="sendChat()">שלחי</button></div></div>`);
+  const m=document.getElementById('messages');m.scrollTop=m.scrollHeight;
+}
+
+function currentMeal(){
+  return TEMPLATE.find(m=>m.id===state.active) || TEMPLATE.find(m=>!state.done[m.id]) || TEMPLATE[TEMPLATE.length-1];
+}
+
+function loadPhoto(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{pendingPhoto=r.result;openPhotoReview();};
+  r.readAsDataURL(f);
+}
+
+function openPhotoReview(){
+  const meal=currentMeal();
+  show(`<h3>בדיקת הצלחת</h3><p class="sub">אשווה את התמונה ל־${meal.name} שלך (${meal.time}), במנות בלבד.</p>
+    <img class="photo-preview-large" src="${pendingPhoto}">
+    <div class="two-actions">
+      <button class="action blue" onclick="analyzePlate()">נתחי את הצלחת</button>
+      <button class="action light" onclick="document.getElementById('photoInput').click()">צלמי מחדש</button>
+    </div>`);
+}
+
+async function analyzePlate(){
+  const meal=currentMeal();
+  show(`<h3>מנתחת את הצלחת</h3><div class="loading">בודקת רכיבים ומשווה ל־${meal.name}…</div>`);
+  let analysis;
+  try{
+    const r=await fetch('/api/plate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:pendingPhoto,meal,state:compactState()})});
+    if(!r.ok)throw new Error('offline');
+    analysis=await r.json();
+    lastPlateAnalysis=analysis;
+  }catch(e){
+    analysis={components:['לא ניתן לזהות אוטומטית בלי חיבור ל-Astra'],match:'לא נותח',note:'אפשר עדיין לשלוח את התמונה בצ׳אט ולתאר מה יש בצלחת.'};
+    lastPlateAnalysis=analysis;
+  }
+  const comps=(analysis.components||[]).map(x=>`<div class="analysis-row"><b>רכיב</b><span>${escapeHtml(x)}</span></div>`).join('');
+  const matchClass=(analysis.match||'').includes('מתאים')?'analysis-ok':'analysis-warn';
+  show(`<h3>בדיקת הצלחת</h3><img class="photo-preview-large" src="${pendingPhoto}">
+    <div class="analysis-card"><div class="analysis-title">מה אני רואה</div><div class="analysis-grid">${comps||'<div class="analysis-row"><b>רכיבים</b><span>לא זוהו בביטחון</span></div>'}
+    <div class="analysis-row"><b>התאמה</b><span class="${matchClass}">${escapeHtml(analysis.match||'לא ברור')}</span></div>
+    <div class="analysis-row"><b>המשך</b><span>${escapeHtml(analysis.note||'ממשיכים לפי התפריט הרגיל.')}</span></div></div></div>
+    <div class="two-actions"><button class="action blue" onclick="savePlateAnalysis()">שמרי ביומן</button><button class="action light" onclick="openChat('')">שאלי את היועצת</button></div>`);
+}
+
+function savePlateAnalysis(){
+  if(!lastPlateAnalysis)return;state.plateAnalyses=state.plateAnalyses||[];state.plateAnalyses.push({time:new Date().toISOString(),meal:currentMeal().name,analysis:lastPlateAnalysis});pendingPhoto=null;lastPlateAnalysis=null;save();toast('הצלחת נשמרה ביומן');closeSheet();
+}
+
+function escapeHtml(s=''){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function localReply(t){
+  if(/מה נשאר/.test(t)){const l=TEMPLATE.filter(m=>!state.done[m.id]).map(m=>m.name);return l.length?`נשארו לך: ${l.join(', ')}. התוספת הגמישה ${state.addon?'כבר נוצלה':'עדיין זמינה'}.`:`כל ארבע הארוחות סומנו ✓ התוספת הגמישה ${state.addon?'נוצלה':'עדיין זמינה'}.`}
+  if(/רעב|רעבה/.test(t))return state.addon?'לגמרי מובן. התחילי בירקות חופשיים ושתייה חמה. אם סיימת את כל היום ועדיין רעבה, נבחר מנת חלבון קלה ונרשום אותה.':'לגמרי מובן. התחילי בירקות חופשיים ושתייה חמה; אם זה לא מספיק, התוספת הגמישה עדיין פנויה.';
+  if(/גזר/.test(t))return 'גזר לא חופשי אצלך. עדיף מלפפון, עגבנייה, חסה או ירק אחר מהרשימה החופשית.';
+  if(/קלור/.test(t))return 'אני עובדת איתך במנות לפי התפריט, בלי ספירת קלוריות. כתבי לי מה האוכל ואכוון לפי המנה המתאימה.';
+  if(/פיצה|לא מתוכנן|חרג/.test(t))return 'הכול בסדר 💜 אין צורך לפצות. ממשיכים לארוחה הבאה כרגיל.';
+  return 'אני כאן איתך. כתבי לי מה אכלת, מה חסר בבית או מה את מתלבטת לגביו, ואעזור לפי התפריט.';
+}
+async function sendChat(){
+  const inp=document.getElementById('chatInput');const t=inp.value.trim();if(!t&&!pendingPhoto)return;
+  state.chat.push({role:'user',text:t||'שלחתי תמונה של הצלחת'});save();
+  let reply='';
+  try{
+    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t,image:pendingPhoto,state:compactState()})});
+    if(!r.ok)throw new Error();const d=await r.json();reply=d.reply||localReply(t);
+  }catch{reply=localReply(t||'תמונה')}
+  state.chat.push({role:'ai',text:reply});pendingPhoto=null;save();openChat('');
+}
+function compactState(){return {done:state.done,selections:state.selections,addon:state.addon,hunger:state.hunger,unplanned:state.unplanned,extraProtein:state.extraProtein,habits:state.habits}}
+
+function quickWater(){
+  const current=parseInt(state.habits.water||'0',10)||0;state.habits.water=String(current+1);save();toast(`💧 ${current+1} כוסות`);
+}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1500)}
+
+function openSummary(){
+  const keys=Object.keys(db.days).sort().slice(-7);const lines=['היי, סיכום השבוע של רוני:'];
+  keys.forEach(k=>{const d=db.days[k];const bits=[];const hc=(d.hunger||[]).length;if(hc)bits.push(`${hc} אירועי רעב`);if(d.addon)bits.push('התוספת הגמישה נוצלה');if((d.extraProtein||[]).length)bits.push(`מנת חלבון נוספת בגלל רעב: ${(d.extraProtein||[]).length}`);if((d.unplanned||[]).length)bits.push(`אכילה לא מתוכננת: ${(d.unplanned||[]).length}`);if(bits.length)lines.push(`• ${k}: ${bits.join(', ')}`)});
+  const hungerDays=keys.filter(k=>(db.days[k].hunger||[]).length).length;if(hungerDays>=3)lines.push('הרעב הופיע ב־3 ימים שונים או יותר, וכדאי לבדוק יחד אם מבנה התפריט עדיין מתאים.');
+  if(lines.length===1)lines.push('לא נאסף עדיין מספיק מידע השבוע.');
+  show(`<h3>סיכום שבוע</h3><p class="sub">מוכן להעתקה לוואטסאפ.</p><div class="summary" id="summaryText">${escapeHtml(lines.join('\n'))}</div><button class="action blue" onclick="copySummary()">העתקה</button>`);
+}
+async function copySummary(){const t=document.getElementById('summaryText').textContent;try{await navigator.clipboard.writeText(t);alert('הסיכום הועתק')}catch{alert('אפשר לסמן ולהעתיק ידנית')}}
+
+render();
+</script>
+</body>
+</html>

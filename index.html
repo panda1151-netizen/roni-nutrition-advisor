@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#F4F1FB">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>היועצת האישית של רוני</title>
 <style>
 :root{
@@ -772,6 +774,7 @@ const SWAPS={
 'שומן':['5 שקדים','2 אגוזי מלך','5 קשיו','5 אגוזי מקדמיה','אגוז ברזיל אחד','5 זיתים','רבע אבוקדו','כפית שמן זית','חצי כפית טחינה גולמית','כפית טחינה מוכנה','חצי כפית חמאת בוטנים','4 קוביות שוקולד מריר']
 };
 
+const API_BASE=localStorage.getItem('roni-api-base')||'';
 const KEY='roni-advisor-full-v3';
 let db=JSON.parse(localStorage.getItem(KEY)||'{"days":{}}');
 const dateKey=new Date().toISOString().slice(0,10);
@@ -912,7 +915,7 @@ async function analyzePlate(){
   show(`<h3>מנתחת את הצלחת</h3><div class="loading">בודקת רכיבים ומשווה ל־${meal.name}…</div>`);
   let analysis;
   try{
-    const r=await fetch('/api/plate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:pendingPhoto,meal,state:compactState()})});
+    const r=await fetch(`${API_BASE}/api/plate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:pendingPhoto,meal,state:compactState()})});
     if(!r.ok)throw new Error('offline');
     analysis=await r.json();
     lastPlateAnalysis=analysis;
@@ -947,7 +950,7 @@ async function sendChat(){
   state.chat.push({role:'user',text:t||'שלחתי תמונה של הצלחת'});save();
   let reply='';
   try{
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t,image:pendingPhoto,state:compactState()})});
+    const r=await fetch(`${API_BASE}/api/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t,image:pendingPhoto,state:compactState()})});
     if(!r.ok)throw new Error();const d=await r.json();reply=d.reply||localReply(t);
   }catch{reply=localReply(t||'תמונה')}
   state.chat.push({role:'ai',text:reply});pendingPhoto=null;save();openChat('');
@@ -968,6 +971,7 @@ function openSummary(){
 }
 async function copySummary(){const t=document.getElementById('summaryText').textContent;try{await navigator.clipboard.writeText(t);alert('הסיכום הועתק')}catch{alert('אפשר לסמן ולהעתיק ידנית')}}
 
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 render();
 </script>
 </body>

@@ -1,0 +1,18 @@
+{
+  "name": "היועצת האישית של רוני",
+  "short_name": "רוני",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F4F1FB",
+  "theme_color": "#F4F1FB",
+  "lang": "he",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

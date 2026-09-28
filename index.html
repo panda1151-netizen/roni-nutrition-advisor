@@ -594,6 +594,42 @@ button,input,textarea{
   color:#12314A;
 }
 
+.today-hero{
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,var(--purple-soft),var(--blue-soft));
+  border-radius:20px;padding:14px 15px;margin:10px 0 12px;
+  box-shadow:var(--shadow-inset);
+}
+.today-hero strong{display:block;font-size:22px;margin-top:3px}
+.today-kicker{font-size:11px;color:var(--sub);font-weight:800}
+.today-ring{
+  width:52px;height:52px;border-radius:50%;
+  display:grid;place-items:center;background:var(--surface);
+  color:var(--purple);font-weight:900;font-size:13px;
+  box-shadow:var(--shadow-raised);
+}
+.today-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.today-card{
+  background:var(--card);border:1px solid rgba(230,224,243,.8);
+  border-radius:16px;padding:11px;box-shadow:var(--shadow-raised);
+}
+.today-card span{display:block;font-size:10px;color:var(--sub);font-weight:800;margin-bottom:4px}
+.today-card b{display:block;font-size:15px}
+.today-card small{display:block;font-size:9px;color:var(--sub);margin-top:3px}
+.today-insight,.today-note{
+  border-radius:16px;padding:11px 12px;margin:9px 0;font-size:11px;line-height:1.45;
+}
+.today-insight{background:var(--purple-soft)}
+.today-insight b{display:block;color:var(--purple);margin-bottom:3px}
+.today-note{background:#FFF5E9}
+.today-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.today-actions .action{margin-top:0;font-size:12px;padding:10px}
+@media (max-width:360px){
+  .today-grid{gap:6px}
+  .today-card{padding:9px}
+  .today-actions{grid-template-columns:1fr}
+}
+
 .chatbox{
   height:54vh;
   background:#FBFAFF;
@@ -749,7 +785,7 @@ button,input,textarea{
   <button class="primary" onclick="openHunger()">אני רעבה 🍽️</button>
   <button class="secondary" onclick="openChat('מה נשאר היום?')">מה נשאר היום?</button>
   <button class="secondary" onclick="openUnplanned()">אכלתי משהו לא מתוכנן</button>
-  <button class="secondary" onclick="openChat('')">שיחה עם היועצת</button>
+  <button class="secondary" onclick="openToday()">היום שלי ✨</button>
 </div>
 
 <div class="toast" id="toast"></div><div class="overlay" id="overlay" onclick="closeOnOverlay(event)"><div class="sheet" id="sheet"></div></div>
@@ -894,6 +930,86 @@ function openDayLog(){
   rows.push(`<div class="log-row"><b>חלבון נוסף בגלל רעב</b> — ${state.extraProtein.length}</div>`);
   rows.push(`<div class="log-row"><b>צלחות שנותחו</b> — ${(state.plateAnalyses||[]).length}</div>`);
   show(`<h3>יומן היום</h3><p class="sub">התמונה המלאה של היום, בלי ציונים.</p>${rows.join('')}<button class="action blue" onclick="openSummary()">סיכום שבוע</button>`);
+}
+
+function openToday(){
+  const doneMeals=TEMPLATE.filter(m=>state.done[m.id]);
+  const nextMeal=TEMPLATE.find(m=>!state.done[m.id]);
+  const water=state.habits.water??'—';
+  const steps=state.habits.steps??'—';
+  const sleep=state.habits.sleep??'—';
+  const hungerCount=(state.hunger||[]).length;
+  const unplannedCount=(state.unplanned||[]).length;
+
+  const weekKeys=Object.keys(db.days).sort().slice(-7);
+  const hungerDays=weekKeys.filter(k=>(db.days[k]?.hunger||[]).length>0).length;
+
+  let insight='';
+  if(hungerDays>=3){
+    insight='הרעב הופיע ב־3 ימים שונים או יותר השבוע — כדאי לציין את זה בסיכום לדיאטנית.';
+  }else if(hungerCount>0){
+    insight='כבר תועד רעב היום. אפשר להמשיך לפי סדר הפעולות שהוגדר בתפריט.';
+  }else if(doneMeals.length===4){
+    insight='כל ארבע הארוחות סומנו היום ✓';
+  }else if(nextMeal){
+    insight=`הארוחה הבאה שלך: ${nextMeal.name} · ${nextMeal.time}`;
+  }
+
+  show(`
+    <h3>היום שלי</h3>
+    <p class="sub">תמונה מהירה של היום וקיצורי דרך לדברים החשובים.</p>
+
+    <div class="today-hero">
+      <div>
+        <span class="today-kicker">התקדמות היום</span>
+        <strong>${doneMeals.length}/4 ארוחות</strong>
+      </div>
+      <div class="today-ring">${doneMeals.length}/4</div>
+    </div>
+
+    <div class="today-grid">
+      <div class="today-card">
+        <span>🍽️ הבא</span>
+        <b>${nextMeal?nextMeal.name:'הכול הושלם'}</b>
+        <small>${nextMeal?nextMeal.time:'✓'}</small>
+      </div>
+      <div class="today-card">
+        <span>✨ תוספת</span>
+        <b>${state.addon?'נוצלה':'זמינה'}</b>
+        <small>פרי / חלבון / שומן</small>
+      </div>
+      <div class="today-card">
+        <span>💧 מים</span>
+        <b>${water}</b>
+        <small>כוסות שדווחו</small>
+      </div>
+      <div class="today-card">
+        <span>👟 צעדים</span>
+        <b>${steps}</b>
+        <small>לפי הדיווח שלך</small>
+      </div>
+      <div class="today-card">
+        <span>🌙 שינה</span>
+        <b>${sleep}</b>
+        <small>שעות שדווחו</small>
+      </div>
+      <div class="today-card">
+        <span>🍽️ רעב</span>
+        <b>${hungerCount}</b>
+        <small>דיווחים היום</small>
+      </div>
+    </div>
+
+    ${insight?`<div class="today-insight"><b>כדאי לדעת</b><span>${insight}</span></div>`:''}
+    ${unplannedCount? `<div class="today-note">תועדה אכילה לא מתוכננת היום — ממשיכים כרגיל, בלי פיצוי.</div>`:''}
+
+    <div class="today-actions">
+      <button class="action blue" onclick="closeSheet();openHunger()">אני רעבה</button>
+      <button class="action light" onclick="closeSheet();openDayLog()">יומן היום</button>
+      <button class="action light" onclick="toggleAddon();openToday()">${state.addon?'בטלי תוספת גמישה':'סמני תוספת גמישה'}</button>
+      <button class="action light" onclick="closeSheet();openSummary()">סיכום שבוע</button>
+    </div>
+  `);
 }
 
 function openChat(seed=''){
